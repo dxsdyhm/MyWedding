@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface Photo {
   id: number;
@@ -9,42 +10,30 @@ interface Photo {
 const PhotoGallery = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [translateX, setTranslateX] = useState(0);
   const touchStartX = useRef(0);
-  const touchStartTime = useRef(0);
-  const animationFrameRef = useRef<number>();
   const containerRef = useRef<HTMLDivElement>(null);
 
   // 照片数据
   const photos: Photo[] = [
-    { id: 1, src: '/images/photo1.jpg', alt: '婚纱照1' },
-    { id: 2, src: '/images/photo2.jpg', alt: '婚纱照2' },
-    { id: 3, src: '/images/photo3.jpg', alt: '婚纱照3' },
-    { id: 4, src: '/images/photo4.jpg', alt: '婚纱照4' },
-    { id: 5, src: '/images/photo5.jpg', alt: '婚纱照5' },
-    { id: 6, src: '/images/photo6.jpg', alt: '婚纱照6' },
+    { id: 1, src: '/images/gallery/gallery1.jpg', alt: '婚纱照1' },
+    { id: 2, src: '/images/gallery/gallery2.jpg', alt: '婚纱照2' },
+    { id: 3, src: '/images/gallery/gallery3.jpg', alt: '婚纱照3' },
+    { id: 4, src: '/images/gallery/gallery4.jpg', alt: '婚纱照4' },
   ];
 
   // 更新当前照片
   useEffect(() => {
-    setSelectedPhoto(photos[currentIndex]);
-  }, [currentIndex]);
-
-  // 清理动画帧
-  useEffect(() => {
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+    if (selectedPhoto) {
+      const index = photos.findIndex(photo => photo.id === selectedPhoto.id);
+      if (index !== -1) {
+        setCurrentIndex(index);
       }
-    };
-  }, []);
+    }
+  }, [selectedPhoto]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
-    touchStartTime.current = Date.now();
-    setIsTransitioning(false);
-    setTranslateX(0);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -59,165 +48,172 @@ const PhotoGallery = () => {
     if (!selectedPhoto) return;
     
     const touchEndX = e.changedTouches[0].clientX;
-    const touchEndTime = Date.now();
     const diff = touchEndX - touchStartX.current;
-    const duration = touchEndTime - touchStartTime.current;
-    const velocity = Math.abs(diff) / duration;
     
     // 判断滑动方向和距离
-    const isSwipe = Math.abs(diff) > 50 || velocity > 0.5;
+    const isSwipe = Math.abs(diff) > 50;
     const isSwipeLeft = diff < 0;
     const isSwipeRight = diff > 0;
     
     if (isSwipe) {
-      setIsTransitioning(true);
-      
-      // 使用requestAnimationFrame实现平滑动画
-      const startTime = performance.now();
-      const startX = translateX;
-      const targetX = isSwipeLeft ? -window.innerWidth : window.innerWidth;
-      const duration = 300; // 动画持续时间（毫秒）
-      
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // 使用缓动函数使动画更自然
-        const easeProgress = 1 - Math.pow(1 - progress, 3);
-        
-        const currentX = startX + (targetX - startX) * easeProgress;
-        setTranslateX(currentX);
-        
-        if (progress < 1) {
-          animationFrameRef.current = requestAnimationFrame(animate);
-        } else {
-          // 动画结束，更新索引
-          if (isSwipeLeft && currentIndex < photos.length - 1) {
-            setCurrentIndex(prev => prev + 1);
-          } else if (isSwipeRight && currentIndex > 0) {
-            setCurrentIndex(prev => prev - 1);
-          }
-          
-          // 重置状态
-          setIsTransitioning(false);
-          setTimeout(() => {
-            setTranslateX(0);
-          }, 50);
-        }
-      };
-      
-      animationFrameRef.current = requestAnimationFrame(animate);
-    } else {
-      // 如果没有达到滑动阈值，回到原位
-      setIsTransitioning(true);
-      
-      const startTime = performance.now();
-      const startX = translateX;
-      const duration = 300;
-      
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeProgress = 1 - Math.pow(1 - progress, 3);
-        
-        const currentX = startX * (1 - easeProgress);
-        setTranslateX(currentX);
-        
-        if (progress < 1) {
-          animationFrameRef.current = requestAnimationFrame(animate);
-        } else {
-          setIsTransitioning(false);
-          setTranslateX(0);
-        }
-      };
-      
-      animationFrameRef.current = requestAnimationFrame(animate);
+      // 滑动到下一张或上一张
+      if (isSwipeLeft && currentIndex < photos.length - 1) {
+        setCurrentIndex(prev => prev + 1);
+        setSelectedPhoto(photos[currentIndex + 1]);
+      } else if (isSwipeRight && currentIndex > 0) {
+        setCurrentIndex(prev => prev - 1);
+        setSelectedPhoto(photos[currentIndex - 1]);
+      }
     }
-  };
-
-  const handleTouchCancel = () => {
-    setIsTransitioning(false);
+    
+    // 重置位置
     setTranslateX(0);
   };
 
-  return (
-    <div className="relative w-full h-[70vh] overflow-hidden">
-      {selectedPhoto && (
-        <div
-          ref={containerRef}
-          className="relative w-full h-full"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={handleTouchCancel}
-        >
-          {/* 当前照片 */}
-          <div
-            className="absolute inset-0 transition-transform duration-300"
-            style={{
-              transform: `translateX(${translateX}px)`,
-              zIndex: 2,
-            }}
+  const handleTouchCancel = () => {
+    setTranslateX(0);
+  };
+
+  const handlePhotoClick = (photo: Photo) => {
+    setSelectedPhoto(photo);
+  };
+
+  const handleClosePreview = () => {
+    setSelectedPhoto(null);
+  };
+
+  // 四宫格显示
+  const renderPhotoGrid = () => {
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        {photos.map((photo) => (
+          <div 
+            key={photo.id} 
+            className="aspect-square overflow-hidden rounded-sm cursor-pointer hover:opacity-90 transition-opacity"
+            onClick={() => handlePhotoClick(photo)}
           >
             <img
-              src={selectedPhoto.src}
-              alt={selectedPhoto.alt}
+              src={photo.src}
+              alt={photo.alt}
               className="w-full h-full object-cover"
             />
           </div>
-          
-          {/* 下一张照片 */}
-          {currentIndex < photos.length - 1 && (
-            <div
-              className="absolute inset-0 transition-transform duration-300"
-              style={{
-                transform: `translateX(calc(100% + ${translateX}px))`,
-                zIndex: 1,
-              }}
-            >
-              <img
-                src={photos[currentIndex + 1].src}
-                alt={photos[currentIndex + 1].alt}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-          
-          {/* 上一张照片 */}
-          {currentIndex > 0 && (
-            <div
-              className="absolute inset-0 transition-transform duration-300"
-              style={{
-                transform: `translateX(calc(-100% + ${translateX}px))`,
-                zIndex: 1,
-              }}
-            >
-              <img
-                src={photos[currentIndex - 1].src}
-                alt={photos[currentIndex - 1].alt}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-        </div>
-      )}
-      
-      {/* 指示器 */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
-        {photos.map((_, index) => (
-          <button
-            key={index}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentIndex ? 'bg-white' : 'bg-white/50'
-            }`}
-            onClick={() => {
-              if (index !== currentIndex) {
-                setCurrentIndex(index);
-              }
-            }}
-          />
         ))}
       </div>
+    );
+  };
+
+  // 照片预览模态框
+  const renderPhotoPreview = () => {
+    if (!selectedPhoto) return null;
+
+    return createPortal(
+      <div 
+        className="fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]"
+        onClick={handleClosePreview}
+      >
+        <div 
+          className="relative w-full h-full flex items-center justify-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            ref={containerRef}
+            className="relative w-full h-full"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
+          >
+            {/* 当前照片 */}
+            <div
+              className="absolute inset-0 transition-transform duration-300 ease-out"
+              style={{
+                transform: `translateX(${translateX}px)`,
+                zIndex: 2,
+              }}
+            >
+              <img
+                src={selectedPhoto.src}
+                alt={selectedPhoto.alt}
+                className="w-full h-full object-contain"
+                loading="eager"
+              />
+            </div>
+            
+            {/* 下一张照片 */}
+            {currentIndex < photos.length - 1 && (
+              <div
+                className="absolute inset-0 transition-transform duration-300 ease-out"
+                style={{
+                  transform: `translateX(calc(100% + ${translateX}px))`,
+                  zIndex: 1,
+                }}
+              >
+                <img
+                  src={photos[currentIndex + 1].src}
+                  alt={photos[currentIndex + 1].alt}
+                  className="w-full h-full object-contain"
+                  loading="eager"
+                />
+              </div>
+            )}
+            
+            {/* 上一张照片 */}
+            {currentIndex > 0 && (
+              <div
+                className="absolute inset-0 transition-transform duration-300 ease-out"
+                style={{
+                  transform: `translateX(calc(-100% + ${translateX}px))`,
+                  zIndex: 1,
+                }}
+              >
+                <img
+                  src={photos[currentIndex - 1].src}
+                  alt={photos[currentIndex - 1].alt}
+                  className="w-full h-full object-contain"
+                  loading="eager"
+                />
+              </div>
+            )}
+          </div>
+          
+          {/* 关闭按钮 */}
+          <button 
+            className="absolute top-4 right-4 text-white bg-black/50 rounded-full p-2 z-10"
+            onClick={handleClosePreview}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* 指示器 */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
+            {photos.map((_, index) => (
+              <button
+                key={index}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index === currentIndex ? 'bg-white' : 'bg-white/50'
+                }`}
+                onClick={() => {
+                  if (index !== currentIndex) {
+                    setCurrentIndex(index);
+                    setSelectedPhoto(photos[index]);
+                  }
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
+  return (
+    <div className="w-full">
+      {renderPhotoGrid()}
+      {renderPhotoPreview()}
     </div>
   );
 };

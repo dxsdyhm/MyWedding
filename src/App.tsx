@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
-import VenueInfo from "./components/VenueInfo";
+import { useState, useEffect, lazy, Suspense } from "react";
 import AudioPlayer from "./components/AudioPlayer";
-import PhotoGallery from "./components/PhotoGallery";
+
+// 使用懒加载组件
+const VenueInfo = lazy(() => import("./components/VenueInfo"));
+const PhotoGallery = lazy(() => import("./components/PhotoGallery"));
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -69,6 +71,7 @@ function App() {
             alt="新人合影"
             className="w-full h-auto rounded-sm shadow-sm mx-auto"
             loading="eager"
+            decoding="async"
           />
         </div>
 
@@ -88,8 +91,10 @@ function App() {
             </button>
           </div>
 
-          {activeTab === 'info' && <VenueInfo />}
-          {activeTab === 'photos' && <PhotoGallery />}
+          <Suspense fallback={<div className="text-center py-8">加载中...</div>}>
+            {activeTab === 'info' && <VenueInfo />}
+            {activeTab === 'photos' && <PhotoGallery />}
+          </Suspense>
         </div>
       </div>
 

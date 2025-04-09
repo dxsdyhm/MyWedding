@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
 interface Photo {
   id: number;
   src: string;
   alt: string;
+  thumbnail?: string;
 }
 
 const PhotoGallery = () => {
@@ -13,14 +14,60 @@ const PhotoGallery = () => {
   const [translateX, setTranslateX] = useState(0);
   const touchStartX = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  // 照片数据
-  const photos: Photo[] = [
-    { id: 1, src: '/images/gallery/gallery1.jpg', alt: '婚纱照1' },
-    { id: 2, src: '/images/gallery/gallery2.jpg', alt: '婚纱照2' },
-    { id: 3, src: '/images/gallery/gallery3.jpg', alt: '婚纱照3' },
-    { id: 4, src: '/images/gallery/gallery4.jpg', alt: '婚纱照4' },
-  ];
+  // 照片数据 - 使用 useMemo 缓存，避免重复创建
+  const photos: Photo[] = useMemo(() => [
+    { 
+      id: 1, 
+      src: '/images/gallery/gallery1.jpg', 
+      alt: '婚纱照1',
+      thumbnail: '/images/gallery/gallery1.jpg'
+    },
+    { 
+      id: 2, 
+      src: '/images/gallery/gallery2.jpg', 
+      alt: '婚纱照2',
+      thumbnail: '/images/gallery/gallery2.jpg'
+    },
+    { 
+      id: 3, 
+      src: '/images/gallery/gallery3.jpg', 
+      alt: '婚纱照3',
+      thumbnail: '/images/gallery/gallery3.jpg'
+    },
+    { 
+      id: 4, 
+      src: '/images/gallery/gallery4.jpg', 
+      alt: '婚纱照4',
+      thumbnail: '/images/gallery/gallery4.jpg'
+    },
+  ], []);
+
+  // 预加载图片
+  useEffect(() => {
+    const preloadImages = async () => {
+      try {
+        // 预加载缩略图
+        const thumbnailPromises = photos.map(photo => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = photo.thumbnail || photo.src;
+          });
+        });
+        
+        await Promise.all(thumbnailPromises);
+        setImagesLoaded(true);
+      } catch (error) {
+        console.error('图片预加载失败:', error);
+        setImagesLoaded(true); // 即使加载失败也显示内容
+      }
+    };
+    
+    preloadImages();
+  }, [photos]);
 
   // 更新当前照片
   useEffect(() => {
@@ -30,7 +77,7 @@ const PhotoGallery = () => {
         setCurrentIndex(index);
       }
     }
-  }, [selectedPhoto]);
+  }, [selectedPhoto, photos]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -93,9 +140,11 @@ const PhotoGallery = () => {
             onClick={() => handlePhotoClick(photo)}
           >
             <img
-              src={photo.src}
+              src={photo.thumbnail || photo.src}
               alt={photo.alt}
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         ))}
@@ -137,6 +186,7 @@ const PhotoGallery = () => {
                 alt={selectedPhoto.alt}
                 className="w-full h-full object-contain"
                 loading="eager"
+                decoding="async"
               />
             </div>
             
@@ -154,6 +204,7 @@ const PhotoGallery = () => {
                   alt={photos[currentIndex + 1].alt}
                   className="w-full h-full object-contain"
                   loading="eager"
+                  decoding="async"
                 />
               </div>
             )}
@@ -172,6 +223,7 @@ const PhotoGallery = () => {
                   alt={photos[currentIndex - 1].alt}
                   className="w-full h-full object-contain"
                   loading="eager"
+                  decoding="async"
                 />
               </div>
             )}

@@ -42,6 +42,18 @@ const PhotoGallery = () => {
       alt: '婚纱照4',
       thumbnail: '/images/gallery/gallery4.jpg'
     },
+    { 
+      id: 5, 
+      src: '/images/gallery/gallery5.jpg', 
+      alt: '婚纱照5',
+      thumbnail: '/images/gallery/gallery5.jpg'
+    },
+    { 
+      id: 6, 
+      src: '/images/gallery/gallery6.jpg', 
+      alt: '婚纱照6',
+      thumbnail: '/images/gallery/gallery6.jpg'
+    },
   ], []);
 
   // 预加载图片

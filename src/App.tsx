@@ -65,7 +65,6 @@ function App() {
         </div>
 
         <div className="mt-6 mb-8 fade-in relative" style={{ animationDelay: '0.6s' }}>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#887e72]/20 to-transparent pointer-events-none"></div>
           <img
             src="/images/couple.jpg"
             alt="新人合影"
@@ -73,6 +72,7 @@ function App() {
             loading="eager"
             decoding="async"
           />
+          <p className="text-center mt-4 text-sm font-light text-[#887e72] tracking-widest">段雪松 / 贾坤</p>
         </div>
 
         <div className="mt-10 border-t border-[#887e72]/20 pt-6 fade-in" style={{ animationDelay: '0.7s' }}>

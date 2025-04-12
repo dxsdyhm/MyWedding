@@ -190,7 +190,6 @@ const LocationMap = () => {
       </div>
 
       <div className="mt-3 text-center">
-        <p className="text-sm font-light">{hotelName}</p>
         <p className="text-xs font-light mt-1">{address}</p>
         <a
           href={getNavigationUrl()}

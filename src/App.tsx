@@ -30,7 +30,7 @@ function App() {
 
   return (
     <div
-      className="relative min-h-screen w-full flex flex-col items-center justify-start p-4 select-none overflow-x-hidden"
+      className="relative min-h-screen w-full flex flex-col items-center justify-start p-4 pt-2 select-none overflow-x-hidden"
       style={{ 
         background: `
           linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%),
@@ -45,13 +45,13 @@ function App() {
         className={`w-full max-w-md mx-auto rounded-md p-4 sm:p-8 pb-24 transition-opacity duration-1000 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         style={{ fontFamily: "'Montserrat', sans-serif", color: "#887e72" }}
       >
-        <div className="mb-8 fade-in" style={{ animationDelay: '0.2s' }}>
-          <h2 className="text-sm font-light tracking-wide uppercase text-center">WE SINCERELY INVITE YOU</h2>
-          <h2 className="text-sm font-light tracking-wide uppercase mt-1 text-center">TO OUR WEDDING</h2>
+        <div className="mb-4 fade-in" style={{ animationDelay: '0.2s' }}>
+          <h2 className="text-xs font-light tracking-wide uppercase text-center">WE SINCERELY INVITE YOU</h2>
+          <h2 className="text-xs font-light tracking-wide uppercase mt-1 text-center">TO OUR WEDDING</h2>
         </div>
 
         <h1
-          className="text-4xl sm:text-5xl my-8 text-[#887e72] text-center fade-in"
+          className="text-5xl sm:text-6xl my-8 text-[#887e72] text-center fade-in"
           style={{ fontFamily: "'Great Vibes', cursive", animationDelay: '0.3s' }}
         >
           Wedding
@@ -60,28 +60,35 @@ function App() {
         <h3 className="text-xl mt-8 mb-4 font-light text-center fade-in" style={{ animationDelay: '0.4s' }}>婚礼邀请函</h3>
 
         <div className="fade-in" style={{ animationDelay: '0.5s' }}>
-          <p className="text-sm mt-6 mb-2 font-light text-center">诚挚邀请您</p>
-          <p className="text-sm mb-8 font-light text-center">前来见证我们的爱与喜悦</p>
+          <p className="text-xs mt-6 mb-2 font-light text-center">诚挚邀请您</p>
+          <p className="text-xs mb-2 font-light text-center">前来见证我们的爱与喜悦</p>
+          <p className="text-xs mb-8 font-light text-center text-[#887e72]/70">Sincerely invite you to witness our love and joy</p>
         </div>
 
-        <div className="mt-6 mb-8 fade-in relative" style={{ animationDelay: '0.6s' }}>
+        <div className="mt-6 mb-12 fade-in relative" style={{ animationDelay: '0.6s' }}>
           <img
             src="/images/couple.jpg"
             alt="新人合影"
             className="w-full h-auto rounded-sm shadow-sm mx-auto"
             loading="eager"
-            decoding="async"
           />
           <p className="text-center mt-4 text-sm font-light text-[#887e72] tracking-widest">段雪松 / 贾坤</p>
+          
+          <div className="mt-12 space-y-2 text-[#887e72]">
+            <p className="text-xs">日期：2025/05/10 (星期六)</p>
+            <p className="text-xs opacity-80">Date: 2025/05/10 (Sat.)</p>
+            <p className="text-xs mt-4">地址：湖北省黄石市富力万达嘉华酒店</p>
+            <p className="text-xs opacity-80">Address: Wanda Realm, Huangshi City, Hubei Province</p>
+          </div>
         </div>
 
-        <div className="mt-10 border-t border-[#887e72]/20 pt-6 fade-in" style={{ animationDelay: '0.7s' }}>
+        <div className="mt-12 fade-in" style={{ animationDelay: '0.7s' }}>
           <div className="flex mb-6">
             <button
               className={`flex-1 py-2 text-sm font-light ${activeTab === 'info' ? 'border-b-2 border-[#887e72]' : 'opacity-70'}`}
               onClick={() => setActiveTab('info')}
             >
-              婚礼资讯
+              婚礼
             </button>
             <button
               className={`flex-1 py-2 text-sm font-light ${activeTab === 'photos' ? 'border-b-2 border-[#887e72]' : 'opacity-70'}`}

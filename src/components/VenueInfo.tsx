@@ -5,6 +5,7 @@ import '../styles/fonts.css';
 const VenueInfo = () => {
   return (
     <div className="mt-8 w-full fade-in font-shaonv" style={{ animationDelay: '0.4s' }}>
+      
       <div className="mb-6 -mx-4 sm:-mx-6 md:-mx-8">
         <img 
           src="/timeline-image.png" 

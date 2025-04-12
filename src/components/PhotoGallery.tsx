@@ -20,39 +20,39 @@ const PhotoGallery = () => {
   const photos: Photo[] = useMemo(() => [
     { 
       id: 1, 
-      src: '/images/gallery/gallery1.jpg', 
+      src: '/images/gallery/gallery1.webp', 
       alt: '婚纱照1',
-      thumbnail: '/images/gallery/gallery1.jpg'
+      thumbnail: '/images/gallery/gallery1.webp'
     },
     { 
       id: 2, 
-      src: '/images/gallery/gallery2.jpg', 
+      src: '/images/gallery/gallery2.webp', 
       alt: '婚纱照2',
-      thumbnail: '/images/gallery/gallery2.jpg'
+      thumbnail: '/images/gallery/gallery2.webp'
     },
     { 
       id: 3, 
-      src: '/images/gallery/gallery3.jpg', 
+      src: '/images/gallery/gallery3.webp', 
       alt: '婚纱照3',
-      thumbnail: '/images/gallery/gallery3.jpg'
+      thumbnail: '/images/gallery/gallery3.webp'
     },
     { 
       id: 4, 
-      src: '/images/gallery/gallery4.jpg', 
+      src: '/images/gallery/gallery4.webp', 
       alt: '婚纱照4',
-      thumbnail: '/images/gallery/gallery4.jpg'
+      thumbnail: '/images/gallery/gallery4.webp'
     },
     { 
       id: 5, 
-      src: '/images/gallery/gallery5.jpg', 
+      src: '/images/gallery/gallery5.webp', 
       alt: '婚纱照5',
-      thumbnail: '/images/gallery/gallery5.jpg'
+      thumbnail: '/images/gallery/gallery5.webp'
     },
     { 
       id: 6, 
-      src: '/images/gallery/gallery6.jpg', 
+      src: '/images/gallery/gallery6.webp', 
       alt: '婚纱照6',
-      thumbnail: '/images/gallery/gallery6.jpg'
+      thumbnail: '/images/gallery/gallery6.webp'
     },
   ], []);
 

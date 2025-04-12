@@ -15,7 +15,7 @@ function App() {
       try {
         // 预加载关键图片
         const img = new Image();
-        img.src = '/images/couple.jpg';
+        img.src = '/images/couple.webp';
         await img.decode();
         
         setIsLoaded(true);
@@ -51,13 +51,16 @@ function App() {
         </div>
 
         <h1
-          className="text-5xl sm:text-6xl my-8 text-[#887e72] text-center fade-in"
+          className="text-6xl sm:text-7xl my-8 text-[#887e72] text-center fade-in"
           style={{ fontFamily: "'Great Vibes', cursive", animationDelay: '0.3s' }}
         >
           Wedding
         </h1>
 
-        <h3 className="text-xl mt-8 mb-4 font-light text-center fade-in" style={{ animationDelay: '0.4s' }}>婚礼邀请函</h3>
+        <div className="text-center fade-in" style={{ animationDelay: '0.4s' }}>
+          <h3 className="text-base mb-1 font-light">婚礼邀请函</h3>
+          <p className="text-sm text-[#887e72]/70">Wedding Invitation</p>
+        </div>
 
         <div className="fade-in" style={{ animationDelay: '0.5s' }}>
           <p className="text-xs mt-6 mb-2 font-light text-center">诚挚邀请您</p>
@@ -67,7 +70,7 @@ function App() {
 
         <div className="mt-6 mb-12 fade-in relative" style={{ animationDelay: '0.6s' }}>
           <img
-            src="/images/couple.jpg"
+            src="/images/couple.webp"
             alt="新人合影"
             className="w-full h-auto rounded-sm shadow-sm mx-auto"
             loading="eager"

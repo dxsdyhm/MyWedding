@@ -30,6 +30,7 @@ const AudioPlayer = () => {
       preload: true,
       volume: 0.3,
       html5: false, // 使用Web Audio API而不是HTML5 Audio
+      autoplay: true, // 尝试自动播放
       onload: () => {
         // 微信浏览器特殊处理
         if (isWeixinBrowser()) {
@@ -52,10 +53,23 @@ const AudioPlayer = () => {
             document.removeEventListener('WeixinJSBridgeReady', handleWeixinJSBridgeReady);
           };
         } else {
-          // 非微信浏览器尝试自动播放
-          sound.play();
-          setIsPlaying(true);
-          setHasInteracted(true);
+          // 非微信浏览器，尝试立即播放
+          try {
+            sound.play();
+            setIsPlaying(true);
+            setHasInteracted(true);
+          } catch (error) {
+            // 自动播放失败，等待用户交互
+            const startPlayback = () => {
+              sound.play();
+              setIsPlaying(true);
+              setHasInteracted(true);
+              document.removeEventListener('touchstart', startPlayback);
+              document.removeEventListener('click', startPlayback);
+            };
+            document.addEventListener('touchstart', startPlayback);
+            document.addEventListener('click', startPlayback);
+          }
         }
       },
       onplay: () => {
@@ -71,10 +85,10 @@ const AudioPlayer = () => {
         setIsPlaying(false);
       },
       onloaderror: (id, error) => {
-        // 音频加载错误处理
+        console.error('音频加载失败:', error);
       },
       onplayerror: (id, error) => {
-        // 音频播放错误处理
+        console.error('音频播放失败:', error);
       }
     });
     

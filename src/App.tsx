@@ -102,8 +102,14 @@ function App() {
           </div>
 
           <Suspense fallback={<div className="text-center py-8">加载中...</div>}>
-            {activeTab === 'info' && <VenueInfo />}
-            {activeTab === 'photos' && <PhotoGallery />}
+            <div>
+              <div className={`${activeTab === 'info' ? 'block' : 'hidden'}`}>
+                <VenueInfo />
+              </div>
+              <div className={`${activeTab === 'photos' ? 'block' : 'hidden'}`}>
+                <PhotoGallery />
+              </div>
+            </div>
           </Suspense>
         </div>
       </div>

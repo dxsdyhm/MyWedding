@@ -20,6 +20,7 @@ const VenueInfo = () => {
         <h3 className="text-sm font-light mb-2 text-center text-[#887e72]">新人碎碎念</h3>
         <div className="space-y-2 px-4 sm:px-6 md:px-8">
           <p className="text-xs leading-tight text-[#887e72]">* 户外仪式，建议穿着浅色衣服，一起来见证我们的幸福时刻</p>
+          <p className="text-xs leading-tight text-[#887e72]">* 酒店可免费停车，请勿饮酒后驾车</p>
           <p className="text-xs leading-tight text-[#887e72]">* 感谢各位远道而来，如有服务不周，敬请见谅</p>
           <p className="text-xs leading-tight text-[#887e72]">* 请带着最开心的心情来参加我们的婚礼</p>
           <p className="text-xs leading-tight text-[#887e72]">* 赴宴请私信新人</p>

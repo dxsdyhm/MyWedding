@@ -196,8 +196,11 @@ const LocationMap = () => {
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleNavigationClick}
-          className="inline-block mt-3 text-xs py-1 px-3 bg-[#887e72]/10 hover:bg-[#887e72]/20 rounded-sm transition-colors duration-300"
+          className="inline-flex items-center gap-2 mt-3 text-xs py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-sm transition-colors duration-300"
         >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" transform="rotate(45 12 12)" />
+          </svg>
           打开导航
         </a>
       </div>

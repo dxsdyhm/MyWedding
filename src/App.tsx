@@ -1,5 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import AudioPlayer from "./components/AudioPlayer";
+import WechatConfig from "./components/WechatConfig";
 
 // 使用懒加载组件
 const VenueInfo = lazy(() => import("./components/VenueInfo"));
@@ -41,6 +42,7 @@ function App() {
         backgroundAttachment: "fixed"
       }}
     >
+      <WechatConfig />
       <div
         className={`w-full max-w-md mx-auto rounded-md p-4 sm:p-8 pb-24 transition-opacity duration-1000 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         style={{ fontFamily: "'Montserrat', sans-serif", color: "#887e72" }}

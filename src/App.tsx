@@ -29,26 +29,22 @@ function App() {
   }, []);
 
   return (
-    <div
-      className="relative min-h-screen w-full flex flex-col items-center justify-start p-4 pt-2 select-none overflow-x-hidden"
-      style={{ 
-        background: `
-          linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%),
-          repeating-linear-gradient(45deg, #ffffff 0px, #ffffff 2px, transparent 2px, transparent 4px),
-          repeating-linear-gradient(-45deg, #ffffff 0px, #ffffff 2px, transparent 2px, transparent 4px)
-        `,
-        backgroundBlendMode: "soft-light",
-        backgroundAttachment: "fixed"
+    <div 
+      className="relative min-h-screen w-full flex flex-col items-center justify-start p-6 pt-2 select-none overflow-x-hidden"
+      style={{
+        backgroundImage: 'url(/images/bg.webp)',
+        backgroundRepeat: 'repeat',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center top',
       }}
     >
-      <div
-        className={`w-full max-w-md mx-auto rounded-md p-4 sm:p-8 pb-24 transition-opacity duration-1000 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ fontFamily: "'Montserrat', sans-serif", color: "#887e72" }}
-      >
+      <div className="w-full max-w-md mx-auto rounded-md p-2 sm:p-4">
         <div className="mb-4 fade-in" style={{ animationDelay: '0.2s' }}>
           <h2 className="text-xs font-light tracking-wide uppercase text-center">WE SINCERELY INVITE YOU</h2>
           <h2 className="text-xs font-light tracking-wide uppercase mt-1 text-center">TO OUR WEDDING</h2>
         </div>
+
+        <AudioPlayer />
 
         <h1
           className="text-6xl sm:text-7xl my-8 text-[#887e72] text-center fade-in"
@@ -101,26 +97,25 @@ function App() {
             </button>
           </div>
 
-          <Suspense fallback={<div className="text-center py-8">加载中...</div>}>
-            <div>
-              <div className={`${activeTab === 'info' ? 'block' : 'hidden'}`}>
-                <VenueInfo />
-              </div>
-              <div className={`${activeTab === 'photos' ? 'block' : 'hidden'}`}>
-                <PhotoGallery />
-              </div>
+          <div className="mb-16">
+            <div className={`${activeTab === 'info' ? 'block' : 'hidden'}`}>
+              <VenueInfo />
             </div>
-          </Suspense>
+            <div className={`${activeTab === 'photos' ? 'block' : 'hidden'}`}>
+              <PhotoGallery />
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-center px-4 py-2">
+      {/* 底部文字和渐变遮罩 */}
+      <div className="fixed bottom-12 left-0 right-0 flex items-center justify-center px-4">
         <div className={`text-[#887e72]/70 text-xs text-center transition-opacity duration-1000 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-          <p>段雪松 & 贾坤</p>
-          <p className="mt-1">© 2025 | 好久不见 婚礼见！</p>
+          <p>© 2025 | 好久不见 婚礼见！</p>
         </div>
       </div>
-      <AudioPlayer />
+
+      <div className="fixed bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/90 to-transparent pointer-events-none"></div>
     </div>
   );
 }

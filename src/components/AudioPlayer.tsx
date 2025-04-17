@@ -12,6 +12,7 @@ const AudioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const soundRef = useRef<Howl | null>(null);
+  const hasAttemptedPlay = useRef(false);
 
   // 检测是否在微信浏览器中
   const isWeixinBrowser = () => {
@@ -30,15 +31,18 @@ const AudioPlayer = () => {
       preload: true,
       volume: 0.3,
       html5: false, // 使用Web Audio API而不是HTML5 Audio
-      autoplay: true, // 尝试自动播放
+      autoplay: false, // 禁用自动播放
       onload: () => {
         // 微信浏览器特殊处理
         if (isWeixinBrowser()) {
           // 监听微信的 WeixinJSBridgeReady 事件
           const handleWeixinJSBridgeReady = () => {
-            sound.play();
-            setIsPlaying(true);
-            setHasInteracted(true);
+            if (!hasAttemptedPlay.current) {
+              sound.play();
+              setIsPlaying(true);
+              setHasInteracted(true);
+              hasAttemptedPlay.current = true;
+            }
           };
           
           // 如果已经就绪，直接调用
@@ -53,23 +57,19 @@ const AudioPlayer = () => {
             document.removeEventListener('WeixinJSBridgeReady', handleWeixinJSBridgeReady);
           };
         } else {
-          // 非微信浏览器，尝试立即播放
-          try {
-            sound.play();
-            setIsPlaying(true);
-            setHasInteracted(true);
-          } catch (error) {
-            // 自动播放失败，等待用户交互
-            const startPlayback = () => {
+          // 非微信浏览器，等待用户交互
+          const startPlayback = () => {
+            if (!hasAttemptedPlay.current) {
               sound.play();
               setIsPlaying(true);
               setHasInteracted(true);
+              hasAttemptedPlay.current = true;
               document.removeEventListener('touchstart', startPlayback);
               document.removeEventListener('click', startPlayback);
-            };
-            document.addEventListener('touchstart', startPlayback);
-            document.addEventListener('click', startPlayback);
-          }
+            }
+          };
+          document.addEventListener('touchstart', startPlayback);
+          document.addEventListener('click', startPlayback);
         }
       },
       onplay: () => {
@@ -124,31 +124,6 @@ const AudioPlayer = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [isPlaying, hasInteracted]);
-
-  // 添加用户交互监听
-  useEffect(() => {
-    if (hasInteracted || !soundRef.current) return;
-    
-    const handleUserInteraction = () => {
-      setHasInteracted(true);
-      
-      if (soundRef.current) {
-        soundRef.current.play();
-      }
-      
-      // 移除事件监听器
-      document.removeEventListener('click', handleUserInteraction);
-      document.removeEventListener('touchstart', handleUserInteraction);
-    };
-    
-    document.addEventListener('click', handleUserInteraction);
-    document.addEventListener('touchstart', handleUserInteraction);
-    
-    return () => {
-      document.removeEventListener('click', handleUserInteraction);
-      document.removeEventListener('touchstart', handleUserInteraction);
-    };
-  }, [hasInteracted]);
 
   const togglePlay = () => {
     if (!soundRef.current) return;

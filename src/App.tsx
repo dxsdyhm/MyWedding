@@ -15,7 +15,7 @@ function App() {
       try {
         // 预加载关键图片
         const img = new Image();
-        img.src = '/images/couple.webp';
+        img.src = '/images/couple_1.webp';
         await img.decode();
         
         setIsLoaded(true);
@@ -70,7 +70,7 @@ function App() {
 
         <div className="mt-6 mb-12 fade-in relative" style={{ animationDelay: '0.6s' }}>
           <img
-            src="/images/couple.webp"
+            src="/images/couple_1.webp"
             alt="新人合影"
             className="w-full h-auto rounded-sm shadow-sm mx-auto"
             loading="eager"
